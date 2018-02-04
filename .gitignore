@@ -3,8 +3,10 @@
 
 Debug/
 Maze/
+Release/
 Chip8/Debug
 Chip8/Maze
+Chip8/Release
 Chip8/x64
 .vs/
 Chip8/ipch

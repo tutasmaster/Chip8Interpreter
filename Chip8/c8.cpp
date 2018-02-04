@@ -36,6 +36,7 @@ void c8::setBitInMemory(int pos,bool value) {
 }
 
 bool c8::getBitInDisplay(int pos) {
+
 	unsigned char a = display[pos / 8];
 	unsigned char b = (a >> (pos%8)) & 0x1;
 	if (b > 0) 
@@ -59,8 +60,8 @@ void c8::setBitInDisplay(int pos, bool value) {
 		a |= v;
 	}
 
-
 	display[pos / 8] = a;
+	
 }
 
 void c8::initialize()
@@ -100,6 +101,8 @@ void c8::loadFile(const char * path)
 
 	for (int i = 0; i < 0x800; ++i)
 		memory[i + 0x200] = buffer[i];
+
+	delete buffer;
 }
 
 bool c8::cycle()
@@ -278,7 +281,7 @@ bool c8::cycle()
 			//RND - Set Vx = random byte AND kk.
 			X = (opcode & 0x0F00) >> 8;
 			KK = opcode & 0x00FF;
-
+			std::srand(time(NULL));
 			result = std::rand() % 255;
 			
 
@@ -349,10 +352,10 @@ bool c8::cycle()
 					PC += 2;
 					break;
 				case 0x000A:
-					//INPUT SHIT! DONT LOOK o.O
+					//LD - All execution stops until a key is pressed, then the value of that key is stored in Vx.
 					for (int i = 0; i < 0x10; i++) {
 						if (keypad[i]) {
-							X = i;
+							V[X] = i;
 							PC += 2;
 							break;
 						}
@@ -443,7 +446,7 @@ bool engine::OnUserUpdate(float fElapsedTime)
 	c.keypad[0xB] = GetKey('C').bHeld;
 	c.keypad[0xF] = GetKey('V').bHeld;
 	
-
+	if(curTime > 0.01){
 		c.cycle();
 
 		/*DRAW THE DISPLAY*/
@@ -472,5 +475,6 @@ bool engine::OnUserUpdate(float fElapsedTime)
 		}
 			
 		curTime = 0;
+	}
 	return true;
 }
