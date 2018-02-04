@@ -305,11 +305,11 @@ bool c8::cycle()
 					}
 					else if ((a == 0x0 && b == 0x1) || (a == 0x1 && b == 0x0)) {
 						setBitInDisplay((newY * 64) + V[X] + j, true);
-						result = 0x0;
+						//result = 0x0;
 					}
 					else {
 						setBitInDisplay((newY * 64) + V[X] + j, false);
-						result = 0x0;
+						//result = 0x0;
 					}
 					
 				}
@@ -317,27 +317,28 @@ bool c8::cycle()
 			}
 			V[0xF] = result;
 			PC += 2;
-			return true;
 
 			break;
 		case 0xE000:
-
 			Z = opcode & 0x00FF;
 			X = (opcode & 0x0F00) >> 8;
 			switch (Z) {
 				case 0x009E:
 				//SKP - Skip next instruction if key with the value of Vx is pressed.
-					if (keypad[X])
+					if (keypad[V[X]]){ 
 						PC += 2;
-					PC += 2;
+					}
+						
 					break;
 				case 0x00A1:
 				//SKNP - Skip next instruction if key with the value of Vx is not pressed.
-					if (!keypad[X]) 
-						PC += 2;
-					PC += 2;
+					if (!keypad[V[X]]) { 
+						PC += 2; 
+					}
+						
 					break;
 			}
+			//PC += 2;
 		case 0xF000:
 			Z = opcode & 0x00FF;
 			X = (opcode & 0x0F00) >> 8;
@@ -349,8 +350,13 @@ bool c8::cycle()
 					break;
 				case 0x000A:
 					//INPUT SHIT! DONT LOOK o.O
-					//V[X] = 1;
-					PC += 2;
+					for (int i = 0; i < 0x10; i++) {
+						if (keypad[i]) {
+							X = i;
+							PC += 2;
+							break;
+						}
+					}
 					break;
 				case 0x0015:
 					//LD - Set delay timer = Vx.
@@ -438,7 +444,6 @@ bool engine::OnUserUpdate(float fElapsedTime)
 	c.keypad[0xF] = GetKey('V').bHeld;
 	
 
-	if (curTime > 0.001) {
 		c.cycle();
 
 		/*DRAW THE DISPLAY*/
@@ -467,6 +472,5 @@ bool engine::OnUserUpdate(float fElapsedTime)
 		}
 			
 		curTime = 0;
-	}
 	return true;
 }

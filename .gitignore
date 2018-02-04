@@ -3,6 +3,9 @@
 
 Debug/
 Maze/
+Chip8/Debug
+Chip8/Maze
+Chip8/x64
 .vs/
 Chip8/ipch
 
