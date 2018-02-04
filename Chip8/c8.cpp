@@ -303,15 +303,15 @@ bool c8::cycle()
 					unsigned char a = getBitInMemory(((I + i)*8)+j);
 					unsigned char b = getBitInDisplay((newY * 64) + newX + j);
 					if(a == 0x1 && b == 0x1){
-						setBitInDisplay((newY * 64) + V[X] + j, false);
+						setBitInDisplay((newY * 64) + newX + j, false);
 						result = 0x1;
 					}
 					else if ((a == 0x0 && b == 0x1) || (a == 0x1 && b == 0x0)) {
-						setBitInDisplay((newY * 64) + V[X] + j, true);
+						setBitInDisplay((newY * 64) + newX + j, true);
 						//result = 0x0;
 					}
 					else {
-						setBitInDisplay((newY * 64) + V[X] + j, false);
+						setBitInDisplay((newY * 64) + newX + j, false);
 						//result = 0x0;
 					}
 					
@@ -446,7 +446,7 @@ bool engine::OnUserUpdate(float fElapsedTime)
 	c.keypad[0xB] = GetKey('C').bHeld;
 	c.keypad[0xF] = GetKey('V').bHeld;
 	
-	if(curTime > 0.01){
+	if(curTime > maxTime){
 		c.cycle();
 
 		/*DRAW THE DISPLAY*/
@@ -474,6 +474,10 @@ bool engine::OnUserUpdate(float fElapsedTime)
 			DrawString(67, i + 5, std::to_wstring(c.V[i]));
 		}
 			
+		if (c.sound_timer > 0)
+			DrawString(64, 22, L"BEEP");
+		else
+			DrawString(64, 22, L"    ");
 		curTime = 0;
 	}
 	return true;

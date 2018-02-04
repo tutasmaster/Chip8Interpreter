@@ -64,7 +64,8 @@ public:
 	bool OnUserCreate() override;
 	bool OnUserUpdate(float fElapsedTime) override;
 
-	float curTime;
+	float curTime = 0;
+	float maxTime = 0.001f;
 
 	c8 c;
 };
