@@ -1,5 +1,6 @@
 #pragma once
 #include "olcConsoleGameEngine.h"
+#include "olcNoiseMaker.h"
 
 class c8
 {
@@ -59,13 +60,17 @@ public:
 
 class engine : public olcConsoleGameEngine {
 public:
-	engine() { m_sAppName = L"Chip-8 Interpreter"; };
+	engine() { m_sAppName = L"Chip-8 Interpreter"; vector<wstring> devices = olcNoiseMaker<short>::Enumerate(); sound = new olcNoiseMaker<short>(devices[0]); };
+
 
 	bool OnUserCreate() override;
 	bool OnUserUpdate(float fElapsedTime) override;
 
 	float curTime = 0;
-	float maxTime = 0.001f;
+	float maxTime = 0.016f;
+
+	olcNoiseMaker<short>* sound;
 
 	c8 c;
 };
+double GetNoise(double dTime);

@@ -411,9 +411,9 @@ bool c8::cycle()
 			break;
 	}
 	//std::cout << PC << std::endl;
-	if(sound_timer > 0)
+	if (sound_timer > 0)
 		sound_timer -= 1;
-	if(delay_timer > 0)
+	if (delay_timer > 0)
 		delay_timer -= 1;
 	return false;
 }
@@ -421,6 +421,7 @@ bool c8::cycle()
 bool engine::OnUserCreate()
 {
 	curTime = 0;
+	sound->SetUserFunction(GetNoise);
 	return true;
 }
 
@@ -474,11 +475,23 @@ bool engine::OnUserUpdate(float fElapsedTime)
 			DrawString(67, i + 5, std::to_wstring(c.V[i]));
 		}
 			
-		if (c.sound_timer > 0)
-			DrawString(64, 22, L"BEEP");
-		else
-			DrawString(64, 22, L"    ");
-		curTime = 0;
+		DrawString(64, 21, L"ST " + std::to_wstring(c.sound_timer));
+		DrawString(64, 22, L"DT " + std::to_wstring(c.delay_timer));
+
+		if (c.sound_timer > 0){
+			DrawString(64, 24, L"BEEP");
+			sound->SetUserFunction(GetNoise);
+		}
+		else{
+			DrawString(64, 24, L"    ");
+			curTime = 0;
+			sound->SetUserFunction(nullptr);
+		}
 	}
+
 	return true;
+}
+
+double GetNoise(double dTime) {
+	return 0.5*sin(440.0 * 2 * 3.14159 * dTime);
 }
